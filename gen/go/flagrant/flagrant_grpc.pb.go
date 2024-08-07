@@ -22,8 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EmailReminderServiceClient interface {
-	SendNotificationsAll(ctx context.Context, in *SendNotificationsAllRequest, opts ...grpc.CallOption) (*BaseResponse, error)
+	SendNotificationsGroups(ctx context.Context, in *SendNotificationsGroupsRequest, opts ...grpc.CallOption) (*BaseResponse, error)
 	SendNotificationsGroup(ctx context.Context, in *SendNotificationsGroupRequest, opts ...grpc.CallOption) (*BaseResponse, error)
+	SendNotificationsCoaches(ctx context.Context, in *SendNotificationsCoachesRequest, opts ...grpc.CallOption) (*BaseResponse, error)
+	SendNotificationsCoach(ctx context.Context, in *SendNotificationsCoachRequest, opts ...grpc.CallOption) (*BaseResponse, error)
 }
 
 type emailReminderServiceClient struct {
@@ -34,9 +36,9 @@ func NewEmailReminderServiceClient(cc grpc.ClientConnInterface) EmailReminderSer
 	return &emailReminderServiceClient{cc}
 }
 
-func (c *emailReminderServiceClient) SendNotificationsAll(ctx context.Context, in *SendNotificationsAllRequest, opts ...grpc.CallOption) (*BaseResponse, error) {
+func (c *emailReminderServiceClient) SendNotificationsGroups(ctx context.Context, in *SendNotificationsGroupsRequest, opts ...grpc.CallOption) (*BaseResponse, error) {
 	out := new(BaseResponse)
-	err := c.cc.Invoke(ctx, "/flagrant.EmailReminderService/SendNotificationsAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/flagrant.EmailReminderService/SendNotificationsGroups", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +54,32 @@ func (c *emailReminderServiceClient) SendNotificationsGroup(ctx context.Context,
 	return out, nil
 }
 
+func (c *emailReminderServiceClient) SendNotificationsCoaches(ctx context.Context, in *SendNotificationsCoachesRequest, opts ...grpc.CallOption) (*BaseResponse, error) {
+	out := new(BaseResponse)
+	err := c.cc.Invoke(ctx, "/flagrant.EmailReminderService/SendNotificationsCoaches", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *emailReminderServiceClient) SendNotificationsCoach(ctx context.Context, in *SendNotificationsCoachRequest, opts ...grpc.CallOption) (*BaseResponse, error) {
+	out := new(BaseResponse)
+	err := c.cc.Invoke(ctx, "/flagrant.EmailReminderService/SendNotificationsCoach", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EmailReminderServiceServer is the server API for EmailReminderService service.
 // All implementations must embed UnimplementedEmailReminderServiceServer
 // for forward compatibility
 type EmailReminderServiceServer interface {
-	SendNotificationsAll(context.Context, *SendNotificationsAllRequest) (*BaseResponse, error)
+	SendNotificationsGroups(context.Context, *SendNotificationsGroupsRequest) (*BaseResponse, error)
 	SendNotificationsGroup(context.Context, *SendNotificationsGroupRequest) (*BaseResponse, error)
+	SendNotificationsCoaches(context.Context, *SendNotificationsCoachesRequest) (*BaseResponse, error)
+	SendNotificationsCoach(context.Context, *SendNotificationsCoachRequest) (*BaseResponse, error)
 	mustEmbedUnimplementedEmailReminderServiceServer()
 }
 
@@ -65,11 +87,17 @@ type EmailReminderServiceServer interface {
 type UnimplementedEmailReminderServiceServer struct {
 }
 
-func (UnimplementedEmailReminderServiceServer) SendNotificationsAll(context.Context, *SendNotificationsAllRequest) (*BaseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendNotificationsAll not implemented")
+func (UnimplementedEmailReminderServiceServer) SendNotificationsGroups(context.Context, *SendNotificationsGroupsRequest) (*BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendNotificationsGroups not implemented")
 }
 func (UnimplementedEmailReminderServiceServer) SendNotificationsGroup(context.Context, *SendNotificationsGroupRequest) (*BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendNotificationsGroup not implemented")
+}
+func (UnimplementedEmailReminderServiceServer) SendNotificationsCoaches(context.Context, *SendNotificationsCoachesRequest) (*BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendNotificationsCoaches not implemented")
+}
+func (UnimplementedEmailReminderServiceServer) SendNotificationsCoach(context.Context, *SendNotificationsCoachRequest) (*BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendNotificationsCoach not implemented")
 }
 func (UnimplementedEmailReminderServiceServer) mustEmbedUnimplementedEmailReminderServiceServer() {}
 
@@ -84,20 +112,20 @@ func RegisterEmailReminderServiceServer(s grpc.ServiceRegistrar, srv EmailRemind
 	s.RegisterService(&EmailReminderService_ServiceDesc, srv)
 }
 
-func _EmailReminderService_SendNotificationsAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendNotificationsAllRequest)
+func _EmailReminderService_SendNotificationsGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendNotificationsGroupsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EmailReminderServiceServer).SendNotificationsAll(ctx, in)
+		return srv.(EmailReminderServiceServer).SendNotificationsGroups(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flagrant.EmailReminderService/SendNotificationsAll",
+		FullMethod: "/flagrant.EmailReminderService/SendNotificationsGroups",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmailReminderServiceServer).SendNotificationsAll(ctx, req.(*SendNotificationsAllRequest))
+		return srv.(EmailReminderServiceServer).SendNotificationsGroups(ctx, req.(*SendNotificationsGroupsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -120,6 +148,42 @@ func _EmailReminderService_SendNotificationsGroup_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EmailReminderService_SendNotificationsCoaches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendNotificationsCoachesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmailReminderServiceServer).SendNotificationsCoaches(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flagrant.EmailReminderService/SendNotificationsCoaches",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmailReminderServiceServer).SendNotificationsCoaches(ctx, req.(*SendNotificationsCoachesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EmailReminderService_SendNotificationsCoach_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendNotificationsCoachRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmailReminderServiceServer).SendNotificationsCoach(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flagrant.EmailReminderService/SendNotificationsCoach",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmailReminderServiceServer).SendNotificationsCoach(ctx, req.(*SendNotificationsCoachRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EmailReminderService_ServiceDesc is the grpc.ServiceDesc for EmailReminderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -128,12 +192,20 @@ var EmailReminderService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*EmailReminderServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendNotificationsAll",
-			Handler:    _EmailReminderService_SendNotificationsAll_Handler,
+			MethodName: "SendNotificationsGroups",
+			Handler:    _EmailReminderService_SendNotificationsGroups_Handler,
 		},
 		{
 			MethodName: "SendNotificationsGroup",
 			Handler:    _EmailReminderService_SendNotificationsGroup_Handler,
+		},
+		{
+			MethodName: "SendNotificationsCoaches",
+			Handler:    _EmailReminderService_SendNotificationsCoaches_Handler,
+		},
+		{
+			MethodName: "SendNotificationsCoach",
+			Handler:    _EmailReminderService_SendNotificationsCoach_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
