@@ -5,14 +5,22 @@ package flagrant;
 option go_package = "../flagrant";
 
 service EmailReminderService{
-  rpc SendNotificationsAll(SendNotificationsAllRequest) returns (BaseResponse);
+  rpc SendNotificationsGroups(SendNotificationsAllRequest) returns (BaseResponse);
   rpc SendNotificationsGroup(SendNotificationsGroupRequest) returns (BaseResponse);
+  rpc SendNotificationsCoaches(SendNotificationsCoachesRequest) returns (BaseResponse);
+  rpc SendNotificationsCoach(SendNotificationsCoachRequest) returns (BaseResponse);
 }
 
 message SendNotificationsAllRequest{}
 
 message SendNotificationsGroupRequest{
   string group_name = 1;
+}
+
+message SendNotificationsCoachesRequest{}
+
+message SendNotificationsCoachRequest{
+  int64 id = 1;
 }
 
 message BaseResponse{
